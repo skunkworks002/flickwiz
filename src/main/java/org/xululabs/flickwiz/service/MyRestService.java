@@ -63,11 +63,14 @@ public class MyRestService {
 	
 	@RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
 	public @ResponseBody ResponseModel getFeatureResult(
-			@RequestBody FlickwizImage uploadedImage) {
+			@RequestBody FlickwizImage uploadedImage) throws IOException {
 		System.out.println("Request Received on path /uploadImage");
 		System.out.println(uploadedImage);
 		Loader.init();
-
+		
+		
+		
+		
 		if (startFirstTime) {
 			try {
 				allFeaturesExtraction();
@@ -89,6 +92,8 @@ public class MyRestService {
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(
 					imageBytes));
 
+			System.out.println(img.getWidth() + " * "+ img.getHeight());
+			
 			descriptorMatcher = DescriptorMatcher
 					.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 			queryDescriptor = orb.getORBFeaturesDescriptorMat(Converter
@@ -156,7 +161,7 @@ public class MyRestService {
 						
 						System.out.println("Inserting data"+count);
 					}
-					if (count == 6) {
+					if (count == 5) {
 						count = 0;
 						break;
 					}
@@ -173,6 +178,7 @@ public class MyRestService {
 		}
 		return new ResponseModel(bestNames, bestURLS, IMDBDetials);
 	}
+
 
 	/*
 	 * 	This function is used to get IMDB movie details.
@@ -218,10 +224,20 @@ public class MyRestService {
 		featuresORB = new FeaturesORB();
 		String[] nextLine;
 		// String checkString = new String();
-		CSVReader reader = new CSVReader(
-				new FileReader("movieFile/movies.csv"), ',', '\'', 1);
+		
+		CSVReader reader = new CSVReader(new FileReader("movieFile/movies.csv"), ',','\"', 1);
+		//List content=reader.readAll();
+	
+		//String[] row=null;
+		
+		//for (Object object : content) {
+		 //   row = (String[]) object; 
+		  //  System.out.println(Arrays.asList(row));
+		//}
+	
 		while ((nextLine = reader.readNext()) != null) {
 			// nextLine[] is an array of values from the line
+			
 			String imageUrl = (String.valueOf(nextLine[1].charAt(0)).equals(
 					"\"") ? nextLine[1].substring(1, nextLine[1].length() - 1)
 					: nextLine[1]);
@@ -236,16 +252,16 @@ public class MyRestService {
 					.getORBFeaturesDescriptorMat(Converter.img2Mat(ImageIO
 							.read(new URL(imageUrl)))));
 
-			System.out.println("Name ==> "+imageName );
-			System.out.println("Url ==> "+imageUrl );
+			/*
+			 * You can uncomment these lines if you to see that csv is parsed correctly
+			 */
+			//System.out.println("Name ==> "+imageName );
+			//System.out.println("Url ==> "+imageUrl );
 			posterNames.add(counter, imageName);
 			posterUrls.add(counter, new URL(imageUrl));
-
-			
-			
 			++counter;
 
-		}
+		} 
 		
 		reader.close();
 	}
