@@ -2,6 +2,7 @@ package org.xululabs.flickwiz.service;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,6 +93,13 @@ public class MyRestService {
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(
 					imageBytes));
 
+			
+			/*
+			 * To store uploaded image
+			 */
+			File outputfile = new File("image.jpg");
+			ImageIO.write(img, "jpg", outputfile);
+			
 			System.out.println(img.getWidth() + " * "+ img.getHeight());
 			
 			descriptorMatcher = DescriptorMatcher
