@@ -99,6 +99,7 @@ public class MyRestService {
 			 */
 			File outputfile = new File("image.jpg");
 			ImageIO.write(img, "jpg", outputfile);
+			System.out.println("filesaved"+outputfile.getAbsolutePath());
 			
 			System.out.println(img.getWidth() + " * "+ img.getHeight());
 			
