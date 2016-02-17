@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -21,8 +22,10 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
+import org.opencv.core.Size;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorMatcher;
+import org.opencv.imgproc.Imgproc;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +68,7 @@ public class MyRestService {
 	@RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
 	public @ResponseBody ResponseModel getFeatureResult(
 			@RequestBody FlickwizImage uploadedImage) throws IOException {
-		System.out.println("Request Received on path /uploadImage");
+		System.out.println("Request Received on path /uploadImage" +"[ "+ Calendar.getInstance().getTime()+" ]" );
 		System.out.println(uploadedImage);
 		Loader.init();
 		
@@ -99,7 +102,7 @@ public class MyRestService {
 			 */
 			File outputfile = new File("image.jpg");
 			ImageIO.write(img, "jpg", outputfile);
-			System.out.println("filesaved"+outputfile.getAbsolutePath());
+			System.out.println("filesaved : "+outputfile.getAbsolutePath());
 			
 			System.out.println(img.getWidth() + " * "+ img.getHeight());
 			
@@ -168,9 +171,10 @@ public class MyRestService {
 						tempList.add(similarIndices.get(i).getName());
 						++count;
 						
-						System.out.println("Inserting data"+count);
+						
 					}
 					if (count == 5) {
+						System.out.println("Total movies in result : "+count);
 						count = 0;
 						break;
 					}
@@ -257,9 +261,11 @@ public class MyRestService {
 
 			
 			
+			Mat mat=new Mat();
+			mat=Converter.img2Mat(ImageIO.read(new URL(imageUrl)));
+			Imgproc.resize(mat, mat, new Size(450,600));
 			posters_TrainDescriptors.add(counter, featuresORB
-					.getORBFeaturesDescriptorMat(Converter.img2Mat(ImageIO
-							.read(new URL(imageUrl)))));
+					.getORBFeaturesDescriptorMat(mat));
 
 			/*
 			 * You can uncomment these lines if you to see that csv is parsed correctly
