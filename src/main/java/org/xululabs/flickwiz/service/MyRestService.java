@@ -270,8 +270,8 @@ public class MyRestService {
 			/*
 			 * You can uncomment these lines if you to see that csv is parsed correctly
 			 */
-			//System.out.println("Name ==> "+imageName );
-			//System.out.println("Url ==> "+imageUrl );
+			System.out.println("Name ==> "+imageName );
+			System.out.println("Url ==> "+imageUrl );
 			posterNames.add(counter, imageName);
 			posterUrls.add(counter, new URL(imageUrl));
 			++counter;
